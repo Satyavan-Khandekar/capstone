@@ -8,6 +8,7 @@ const ScrumForm = ({ onClose }) => {
   const [taskStatus, setTaskStatus] = useState("To Do");
   const [assignedTo, setAssignedTo] = useState("");
   const [users, setUsers] = useState([]);
+  const [errors, setErrors] = useState({}); // Error state for validation
 
   useEffect(() => {
     axios.get("http://localhost:4000/users")
@@ -15,13 +16,22 @@ const ScrumForm = ({ onClose }) => {
       .catch((error) => console.error("Error fetching users:", error));
   }, []);
 
+  const validateForm = () => {
+    let formErrors = {};
+
+    if (!scrumName.trim()) formErrors.scrumName = "Scrum Name is required.";
+    if (!taskTitle.trim()) formErrors.taskTitle = "Task Title is required.";
+    if (!taskDescription.trim()) formErrors.taskDescription = "Task Description is required.";
+    if (!assignedTo) formErrors.assignedTo = "Please assign a user.";
+
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0; // Return true if no errors
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!scrumName || !taskTitle || !taskDescription || !assignedTo) {
-      alert("All fields are required.");
-      return;
-    }
+    if (!validateForm()) return; // Stop form submission if validation fails
 
     try {
       const scrumResponse = await axios.post("http://localhost:4000/scrums", { name: scrumName });
@@ -47,14 +57,19 @@ const ScrumForm = ({ onClose }) => {
       <h3>Add New Scrum</h3>
       <form onSubmit={handleSubmit}>
         <button type="button" onClick={onClose}>Cancel</button><br />
+
+        {errors.scrumName && <p style={{ color: "red" }}>{errors.scrumName}</p>}
         <label>Scrum Name:</label>
-        <input type="text" value={scrumName} onChange={(e) => setScrumName(e.target.value)} required /><br />
+        <input type="text" value={scrumName} onChange={(e) => setScrumName(e.target.value)} /> <br />
 
+        {errors.taskTitle && <p style={{ color: "red" }}>{errors.taskTitle}</p>}
         <label>Task Title:</label>
-        <input type="text" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} required /><br />
+        <input type="text" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} /> <br />
 
+        {errors.taskDescription && <p style={{ color: "red" }}>{errors.taskDescription}</p>}
         <label>Task Description:</label>
-        <input type="text" value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)} required /><br />
+        <input type="text" value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)} /> <br />
+
 
         <label>Task Status:</label>
         <select value={taskStatus} onChange={(e) => setTaskStatus(e.target.value)}>
@@ -63,16 +78,17 @@ const ScrumForm = ({ onClose }) => {
           <option value="Done">Done</option>
         </select><br />
 
+        {errors.assignedTo && <p style={{ color: "red" }}>{errors.assignedTo}</p>}
         <label>Assign To:</label>
-        <select value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} required>
+        <select value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)}>
           <option value="">Select a user</option>
           {users.map((user) => (
             <option key={user.id} value={user.id}>{user.name}</option>
           ))}
         </select><br />
+        
 
         <button type="submit">Create Scrum</button>
-
       </form>
     </div>
   );

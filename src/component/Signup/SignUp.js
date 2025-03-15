@@ -8,29 +8,44 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    let formErrors = {};
+
+    if (!name.trim()) {
+      formErrors.name = "Name is required.";
+    }
+
+    if (!email.trim()) {
+      formErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      formErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!password.trim()) {
+      formErrors.password = "Password is required.";
+    } else if (password.length < 6) {
+      formErrors.password = "Password must be at least 6 characters.";
+    }
+
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0; // Returns true if no errors
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
 
-    if (!name || !email || !password) {
-      setError("All fields are required.");
-      return;
-    }
-
-    if (!email.includes("@")) {
-      setError("Please include an '@' in the email.");
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       const response = await axios.get("http://localhost:4000/users");
       const users = response.data;
 
       if (users.some((user) => user.email === email)) {
-        setError("Email already exists. Please use another email.");
+        setErrors({ email: "Email already exists. Please use another email." });
         return;
       }
 
@@ -41,21 +56,28 @@ const SignUp = () => {
       login(newUser);
       navigate("/");
     } catch (err) {
-      setError("Error signing up. Please try again.");
+      setErrors({ general: "Error signing up. Please try again." });
     }
   };
 
   return (
     <div>
       <h2>Sign Up</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
+
       <form onSubmit={handleSignUp}>
+        {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
         <label>Name: </label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} /> <br />
+
+        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
         <label>Email: </label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /> <br />
+
+        {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
         <label>Password: </label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /> <br />
+
         <button type="submit">Sign Up</button>
       </form>
     </div>

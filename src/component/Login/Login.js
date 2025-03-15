@@ -7,22 +7,31 @@ const Login = () => {
   const { login } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    let formErrors = {};
+
+    if (!email.trim()) {
+      formErrors.email = "Email is required.";
+    } else if (!email.includes("@")) {
+      formErrors.email = "Please include an '@' in the email.";
+    }
+
+    if (!password.trim()) {
+      formErrors.password = "Password is required.";
+    }
+
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0; // Returns true if no errors
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
 
-    if (!email || !password) {
-      setError("Both fields are required.");
-      return;
-    }
-
-    if (!email.includes("@")) {
-      setError("Please include an '@' in the email.");
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       const response = await axios.get("http://localhost:4000/users");
@@ -33,24 +42,33 @@ const Login = () => {
         login(user);
         navigate("/");
       } else {
-        setError("Invalid email or password.");
+        setErrors({ credentials: "Invalid email or password." });
       }
     } catch (err) {
-      setError("Error logging in. Please try again.");
+      setErrors({ credentials: "Error logging in. Please try again." });
     }
   };
 
   return (
     <div>
       <h2>Login</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {errors.credentials && <span style={{ color: "red" }}>{errors.credentials}</span>}
+       
+      
+
       <form onSubmit={handleLogin}>
+      {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
         <label>Email: </label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /> <br/>
+
+        {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
         <label>Password: </label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /> <br/>
+
         <button type="submit">Login</button>
       </form>
+
       <button onClick={() => navigate("/signup")}>Sign Up</button>
     </div>
   );
