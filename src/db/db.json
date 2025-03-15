@@ -84,7 +84,7 @@
       "id": "2",
       "title": "Task Two",
       "description": "Description for Task Two",
-      "status": "Done",
+      "status": "In Progress",
       "scrumId": 2,
       "assignedTo": 3,
       "history": [

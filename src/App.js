@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
 import { UserProvider, UserContext } from "./context/UserContext"; 
 import Dashboard from "./component/Dashboard/Dashboard";
 import Login from "./component/Login/Login";
@@ -12,18 +12,22 @@ const App = () => {
       <Router>
         <Nav />
         <Routes>
-          {/* Common Routes */}
+          {/* Public Routes */}
           <Route path="/" element={<Dashboard />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profiles" element={<UserProfile />} />
+          
+          {/* Redirect Logged-in Users Away from Login Page */}
+          <Route path="/login" element={<ProtectedAuthRoute><Login /></ProtectedAuthRoute>} />
 
+          {/* Protect Profile Route - Only Logged-in Users Can Access */}
+          <Route path="/profiles" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         </Routes>
       </Router>
     </UserProvider>
   );
 };
 
+// Navigation Bar with Logout Functionality
 const Nav = () => {
   const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
@@ -48,6 +52,18 @@ const Nav = () => {
       </ul>
     </nav>
   );
+};
+
+// Protect Routes from Unauthenticated Users
+const ProtectedRoute = ({ children }) => {
+  const { user } = useContext(UserContext);
+  return user ? children : <Navigate to="/login" />;
+};
+
+// Redirect Logged-in Users Away from Login Page
+const ProtectedAuthRoute = ({ children }) => {
+  const { user } = useContext(UserContext);
+  return user ? <Navigate to="/" /> : children;
 };
 
 export default App;
