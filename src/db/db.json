@@ -1,0 +1,126 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "adminpassword",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "name": "Employee One",
+      "email": "employee1@example.com",
+      "password": "password1",
+      "role": "employee"
+    },
+    {
+      "id": "3",
+      "name": "Employee Two",
+      "email": "employee2@example.com",
+      "password": "password2",
+      "role": "employee"
+    },
+    {
+      "name": "Employee Three",
+      "email": "employee3@example.com",
+      "password": "password3",
+      "role": "employee",
+      "id": "4"
+    },
+    {
+      "name": "Employee Four",
+      "email": "employee4@example.com",
+      "password": "password4",
+      "role": "employee",
+      "id": "5"
+    },
+    {
+      "id": "6",
+      "name": "Employee Five",
+      "email": "employee5@example.com",
+      "password": "password5",
+      "role": "employee"
+    }
+  ],
+  "scrums": [
+    {
+      "id": "1",
+      "name": "Scrum Team A"
+    },
+    {
+      "id": "2",
+      "name": "Scrum Team B"
+    },
+    {
+      "id": "3",
+      "name": "Scrum Team C"
+    },
+    {
+      "id": "202a",
+      "name": "Scrum Team D"
+    },
+    {
+      "id": "da35",
+      "name": "Scrum Team E"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Task One",
+      "description": "Description for Task One",
+      "status": "In Progress",
+      "scrumId": 1,
+      "assignedTo": 2,
+      "history": [
+        {
+          "status": "To Do",
+          "date": "2024-07-01"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Task Two",
+      "description": "Description for Task Two",
+      "status": "Done",
+      "scrumId": 2,
+      "assignedTo": 3,
+      "history": [
+        {
+          "status": "To Do",
+          "date": "2024-07-02"
+        },
+        {
+          "status": "In Progress",
+          "date": "2024-07-03"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Task Three",
+      "description": "Description for Task Three",
+      "status": "To Do",
+      "scrumId": "3",
+      "assignedTo": "4"
+    },
+    {
+      "id": "18d9",
+      "title": "Task Four",
+      "description": "Description for Task Four",
+      "status": "To Do",
+      "scrumId": "202a",
+      "assignedTo": "5"
+    },
+    {
+      "id": "b38d",
+      "title": "Task Five",
+      "description": "Description for Task Five",
+      "status": "To Do",
+      "scrumId": "da35",
+      "assignedTo": "6"
+    }
+  ]
+}
